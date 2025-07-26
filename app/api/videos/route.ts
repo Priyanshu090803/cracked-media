@@ -1,9 +1,9 @@
 
 import { PrismaClient } from "@/app/generated/prisma";
 import { NextRequest, NextResponse } from "next/server";
-export const prisma = new PrismaClient();
+const prisma = new PrismaClient();
 
-export async function GET (){
+export async function GET (request: NextRequest) {
     try {
         const videos= await prisma.video.findMany({
             orderBy:{createdAt:'desc'}
