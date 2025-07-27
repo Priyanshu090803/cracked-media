@@ -101,7 +101,7 @@ const VideoUpload = () => {
   }, [previewUrl])
 
   return (
-    <div className=" h-screen overflow-y-auto bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className=" h-full overflow-y-auto  py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md mx-auto">
         <div className="bg-white rounded-xl shadow-md p-8">
           <div className="text-center mb-8">

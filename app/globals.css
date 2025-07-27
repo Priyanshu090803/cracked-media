@@ -121,3 +121,21 @@
     @apply bg-background text-foreground;
   }
 }
+/* .cl-footer,
+.cl-footerAction,
+.cl-footerActionLink,
+[data-clerk-element="footer"],
+[data-clerk-element="footerAction"] {
+  display: none !important;
+} */
+
+/* Hide "Secured by Clerk" text specifically */
+/* .cl-internal-1w8pzl5 {
+  display: none !important;
+} */
+
+/* Alternative approach - hide all footer content */
+/* .cl-signIn-root .cl-footer,
+.cl-signUp-root .cl-footer {
+  display: none !important;
+} */

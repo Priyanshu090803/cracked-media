@@ -1,16 +1,25 @@
 'use client';
 import { useClerk, useUser } from "@clerk/nextjs";
-import Link from "next/link";
+// import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
-import {LogOutIcon,LayoutDashboardIcon,Share2Icon,UploadIcon,ImageIcon,MenuIcon} from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
+import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 
-const sideBarItems = [
-  { href:"/home", icon: LayoutDashboardIcon, label: "Home Page" },
-  {href:"/social-share", icon: Share2Icon, label: "Social Share" },
-  {href:"/video-upload", icon: UploadIcon, label: "Video Upload" },
-]
+import {
+  Navbar,
+  NavBody,
+  NavItems,
+  MobileNav,
+  NavbarLogo,
+  NavbarButton,
+  MobileNavHeader,
+  MobileNavToggle,
+  MobileNavMenu,
+} from "@/components/ui/resizable-navbar"
+ 
+
+ 
 
 
 export default function AppLayout({
@@ -18,62 +27,119 @@ export default function AppLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ const navItems = [
+    {
+      name: "Home  ",
+      link: "/home",
+    },
+    {
+      name: "Social Share",
+      link: "/social-share",
+    },
+    {
+      name: "Video Upload",
+      link: "/video-upload",
+    },
+  ];
+
+
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
+  // const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
     router.push("/sign-in");
   };
-          {console.log( user)}
 
   return (
-    <div className="flex h-full overflow-y-hidden">
-      <aside className={` bg-gradient-to-br from-purple-100 via-indigo-50 to-fuchsia-100    text-white w-64 top-0 sticky ${isOpen ? "block" : "hidden"} md:block`}>
-        <div className="p-4 w-full   ">
-          <h2 className=" text-3xl text-transparent bg-clip-text bg-gradient-to-t from-neutral-500 to-violet-400 font-semibold mb-10 text-center">Dashboard</h2>
-          <ul>
-            {sideBarItems.map((item) => (
-              <li key={item.href} className={`mb-2 ${pathname === item.href ? "bg-gray-300  rounded-lg" : ""}`}>
-                <Link href={item.href} className="flex text-black items-center p-2 hover:bg-gray-200  rounded-lg px-2 py-3">
-                  <item.icon className="mr-2 " />
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-40 p-4   border-gray-700">
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center justify-center px-4  hover:bg-red-500 hover:text-white text-black py-3 cursor-pointer transition-colors rounded"
-          >
-            <LogOutIcon className="mr-2" />
-            Sign Out
-          </button>
-        </div>
-      </aside>
-
-      <main className="flex-grow p-6  ">
-        <header className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 bg-gray-800 text-white rounded"
-          >
-            <MenuIcon />
-          </button>
-          <p className="text-lg text-neutral-700 underline  ">Welcome, {user?.fullName || "User"}!</p>
-          <div className=" flex items-center h-full gap-4 border border-neutral-300 rounded-lg px-3 py-1">
-            <p className=" text-sm text-neutral-600">{user?.emailAddresses?.[0]?.emailAddress || ""}</p>
-                      <Image src={user?.imageUrl || "/default-profile.png"} alt="profile-img" height={32} width={32} className=" rounded-full"/>
-
-          </div>
-
+    <div className="flex flex-col w-full h-full  bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <Navbar className=" w-full">
+        {/* Desktop Navigation */}
+        <NavBody className=" w-full">
+          <NavbarLogo />
+          <NavItems items={navItems} className=" w-full "/>
+          <div className="flex items-center gap-4  ">
+            
+             {user &&<div className=" flex items-center gap-2     border-neutral-700  px-2 py-1 rounded-2xl">
+           <div className="flex items-center gap-1  -mx-4 rounded-lg bg-gradient-to-tl from-gray-200  to-indigo-100 px-2 py-1">
+            {/* <Image src={user?.imageUrl || "/default-profile.png"} alt="profile-img" height={24} width={24} className=" rounded-full"/> */}
+                <ContainerTextFlip
+                className=""
+           words={["Yo",'नमस्ते',"Hello","Hi"]}
+          />  
+            {/* <p className=" text-sm underline text-neutral-600">{user?.emailAddresses?.[0]?.emailAddress || ""}</p> */}
+              <p className="  text-neutral-700 text-sm  underline  ">  {user?.fullName || "User"} </p>
           
-        </header>
+            </div>
+            </div>
+           }
+           {
+            user?( <NavbarButton variant="secondary" className=" bg-gradient-to-tr mx-auto  from-fuchsia-100 to-indigo-300 px-2 py-[6px] flex items-center gap-1 font-medium"
+            onClick={handleSignOut}
+            >Logout  </NavbarButton>):
+            ( <NavbarButton variant="secondary" className=" bg-gradient-to-tr mx-auto  from-fuchsia-100 to-indigo-300 px-2 py-[6px] flex items-center gap-1 font-medium"
+            onClick={()=>router.push('/sign-in')}
+            >Login</NavbarButton>)
+          }
+            {/* <NavbarButton variant="primary">Book a call</NavbarButton> */}
+          </div>
+        </NavBody>
+ 
+        {/* Mobile Navigation */}
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo  />
+            
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+ 
+          <MobileNavMenu
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          >
+            {navItems.map((item, idx) => (
+              <a
+                key={`mobile-link-${idx}`}
+                href={item.link}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="relative text-neutral-600 dark:text-neutral-300"
+              >
+                <span className="block">{item.name}</span>
+              </a>
+            ))}
+            <div className="flex w-full flex-col gap-4">
+              {/* <NavbarButton
+                onClick={() => setIsMobileMenuOpen(false)}
+                variant="primary"
+                className="w-full"
+              >
+                {user?"Logout":"Login"}
+              </NavbarButton> */}
+              {
+            user?( <NavbarButton variant="primary" className=" w-full"
+            onClick={handleSignOut}
+            >Logout  </NavbarButton>):
+            ( <NavbarButton variant="primary" className=" w-full"
+            onClick={()=>router.push('/sign-in')}
+            >Login</NavbarButton>)
+          }
+               {user &&<div className=" flex items-end -mb-4 justify-center gap-4"> 
+            {/* <p className=" text-sm underline text-neutral-600">{user?.emailAddresses?.[0]?.emailAddress || ""}</p> */}
+                <p className=" text-sm underline text-neutral-600">{user.fullName || ""}</p>
+            </div>
+           }
+            </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </Navbar>
+
+      <main className="flex-grow p-6 h-full w-full  ">
 
         {children}
       </main>
